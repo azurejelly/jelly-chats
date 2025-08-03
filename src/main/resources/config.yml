@@ -6,7 +6,7 @@ channels:
   format:
     staff: "<color:#15c224>[STAFF]</color> <color:#5fd961><author>:</color> <content>"
     admin: "<color:#ff2b39>[ADMIN]</color> <color:#ff6973><author>:</color> <content>"
-command:
+commands:
   usage:
     admin: "<red>Usage: /admin-chat <message></red>"
     staff: "<red>Usage: /staff-chat <message></red>"
