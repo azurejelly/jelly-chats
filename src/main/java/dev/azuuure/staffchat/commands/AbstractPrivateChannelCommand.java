@@ -14,7 +14,7 @@ public abstract class AbstractPrivateChannelCommand implements SimpleCommand {
         String[] args = invocation.arguments();
 
         if (args.length == 0) {
-            source.sendMessage(configuration().getComponent("commands.usage.staff"));
+            source.sendMessage(configuration().getComponent("commands.usage." + channel().getType()));
             return;
         }
 
