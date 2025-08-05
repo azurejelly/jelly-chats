@@ -27,7 +27,7 @@ public class PrivateChatMessageListener {
         String preferredType = hasFormat ? chat.id() : "fallback";
 
         Component component = configuration.getComponent("messages.formatting." + preferredType,
-                Placeholder.unparsed("name", chat.name()),
+                Placeholder.unparsed("chat", chat.name()),
                 Placeholder.unparsed("author", message.author()),
                 Placeholder.unparsed("content", message.content())
         );

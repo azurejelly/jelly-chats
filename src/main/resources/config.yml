@@ -37,4 +37,4 @@ messages:
   formatting:
     staff: "<color:#15c224>[STAFF]</color> <color:#5fd961><author>:</color> <content>"
     admin: "<color:#ff2b39>[ADMIN]</color> <color:#ff6973><author>:</color> <content>"
-    fallback: "<dark_aqua>[<chat>]</dark_aqua> <aqua><player>:</aqua> <content>"
+    fallback: "<dark_aqua>[<chat>]</dark_aqua> <aqua><author>:</aqua> <content>"
