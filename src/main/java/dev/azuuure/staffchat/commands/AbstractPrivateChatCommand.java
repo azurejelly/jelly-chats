@@ -14,6 +14,11 @@ public abstract class AbstractPrivateChatCommand implements SimpleCommand {
         CommandSource source = invocation.source();
         String[] args = invocation.arguments();
 
+        if (!chat().enabled()) {
+            source.sendMessage(configuration().getComponent("messages.chat-disabled"));
+            return;
+        }
+
         if (args.length == 0) {
             source.sendMessage(
                     configuration().getComponent("messages.usage",
