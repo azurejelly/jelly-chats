@@ -30,11 +30,11 @@ public class PrivateChatMessageListener {
         String rawPrefix = message.prefix();
         String rawSuffix = message.suffix();
 
-        if (!spacing.node("prefix").getBoolean(false)) {
+        if (spacing.node("prefix").getBoolean(false)) {
             rawPrefix += " ";
         }
 
-        if (!spacing.node("suffix").getBoolean(false)) {
+        if (spacing.node("suffix").getBoolean(false)) {
             rawSuffix = " " + rawSuffix;
         }
 
