@@ -75,8 +75,8 @@ tasks.named("build") {
 
 tasks {
     shadowJar {
-        relocate("redis.clients.jedis", "dev.azuuure.staffchat.libs.jedis")
-        relocate("org.apache.commons.pool2", "dev.azuuure.staffchat.libs.pool2")
-        archiveFileName.set("staff-chat-${project.version}-dist.jar")
+        relocate("redis.clients.jedis", "dev.azuuure.jellychats.libs.jedis")
+        relocate("org.apache.commons.pool2", "dev.azuuure.jellychats.libs.pool2")
+        archiveFileName.set("jelly-chats-${project.version}-dist.jar")
     }
 }
