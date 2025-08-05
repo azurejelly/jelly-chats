@@ -48,14 +48,13 @@ public class DefaultChatManager implements ChatManager {
                 String id = k.toString();
                 logger.info("Loading private chat with ID '{}'", id);
 
-                boolean enabled = v.node("enabled").getBoolean(true);
+                boolean enabled = v.node("enabled").getBoolean(false);
                 String name = v.node("name").getString(id);
                 String channel = v.node("channel").getString(channelPrefix + id);
                 String permission = v.node("permission").getString("staff-chat.chat." + id);
 
-                ConfigurationNode commandNode = v.node("command");
-                String commandName = commandNode.node("main").getString(id.toLowerCase() + "-chat");
-                List<String> aliases = commandNode.node("aliases").getList(String.class);
+                String commandName = v.node("command", "main").getString(id.toLowerCase() + "-chat");
+                List<String> aliases = v.node("command", "aliases").getList(String.class);
 
                 PrivateChat chat = PrivateChat.builder()
                         .id(id)
