@@ -61,7 +61,7 @@ Simply add a new entry under `messages → formatting` with the same chat ID:
 messages:
   # ...
   formatting:
-    moderator: "<gold>[STAFF]</gold> <yellow><author>:</yellow> <content>"
+    moderator: "<gold>[MOD]</gold> <yellow><author>:</yellow> <content>"
 ```
 
 This example assumes you're using the same chat created earlier.
