@@ -5,6 +5,8 @@ redis:
   password: ""
   uri: "redis://localhost:6379"
 console-name: "Console"
+console-server: "N/A"
+unknown-server: "N/A"
 show-init-times: true
 default-channel-prefix: "jelly-chats/"
 chats:
@@ -36,6 +38,6 @@ messages:
   usage: "<red>Usage: /<name> <message></red>"
   chat-disabled: "<red>Sorry, that private chat is disabled.</red>"
   formatting:
-    staff: "<color:#15c224>[STAFF]</color> <color:#5fd961><author>:</color> <content>"
-    admin: "<color:#ff2b39>[ADMIN]</color> <color:#ff6973><author>:</color> <content>"
-    fallback: "<dark_aqua>[<chat>]</dark_aqua> <aqua><author>:</aqua> <content>"
+    staff: "<color:#15c224>[STAFF] (<server>)</color> <color:#5fd961><author>:</color> <content>"
+    admin: "<color:#ff2b39>[ADMIN] (<server>)</color> <color:#ff6973><author>:</color> <content>"
+    fallback: "<color:#ff59e3>[<chat>] (<server>)</color> <color:#ffabf2><player>:</color> <content>"

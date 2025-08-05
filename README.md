@@ -1,6 +1,6 @@
 # jelly-chats
 
-`jelly-chats` is a highly customizable Redis-based private chats plugin for [Velocity](https://github.com/PaperMC/Velocity) proxies.
+JellyChats is a highly customizable Redis-based private chats plugin for [Velocity](https://github.com/PaperMC/Velocity) proxies.
 
 ## Pre-requisites
 

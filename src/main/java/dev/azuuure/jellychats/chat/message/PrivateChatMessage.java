@@ -9,5 +9,6 @@ package dev.azuuure.jellychats.chat.message;
  */
 public record PrivateChatMessage(
         String author,
+        String server,
         String content
 ) {}

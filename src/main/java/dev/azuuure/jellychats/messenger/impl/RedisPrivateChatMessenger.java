@@ -45,11 +45,20 @@ public class RedisPrivateChatMessenger implements PrivateChatMessenger {
 
     @Override
     public void send(CommandSource source, PrivateChat chat, String message) {
-        String author = source instanceof Player player
-                ? player.getUsername()
-                : config.getString("console-name", "Console");
+        String author;
+        String server;
 
-        PrivateChatMessage content = new PrivateChatMessage(author, message);
+        if (source instanceof Player player) {
+            author = player.getUsername();
+            server = player.getCurrentServer()
+                    .map(s -> s.getServerInfo().getName())
+                    .orElse(config.getString("unknown-server", "N/A"));
+        } else {
+            author = config.getString("console-name", "Console");
+            server = config.getString("console-server", "N/A");
+        }
+
+        PrivateChatMessage content = new PrivateChatMessage(author, server, message);
         pubSubHandler.publish(chat.channel(), gson.toJson(content));
     }
 

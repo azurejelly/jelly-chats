@@ -28,6 +28,7 @@ public class PrivateChatMessageListener {
 
         Component component = configuration.getComponent("messages.formatting." + preferredType,
                 Placeholder.unparsed("chat", chat.name()),
+                Placeholder.unparsed("server", message.server()),
                 Placeholder.unparsed("author", message.author()),
                 Placeholder.unparsed("content", message.content())
         );
