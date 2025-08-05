@@ -61,7 +61,14 @@ Simply add a new entry under `messages → formatting` with the same chat ID:
 messages:
   # ...
   formatting:
-    moderator: "<gold>[MOD] (<server>)</gold> <yellow><author>:</yellow> <content>"
+    # Supported placeholders are:
+    # - <server> (the server the player is in)
+    # - <name> (the name of the private chat)
+    # - <author> (the author of the message)
+    # - <content> (the content of the message)
+    # - <prefix> (the prefix of the player, requires LuckPerms)
+    # - <suffix> (the suffix of the player, also requires LuckPerms)
+    moderator: "<gold>[MOD] (<server>)</gold> <prefix><yellow><author>:</yellow> <content>"
 ```
 
 This example assumes you're using the same chat created earlier.
