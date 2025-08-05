@@ -15,6 +15,7 @@ import dev.azuuure.jellychats.connection.messaging.RedisPubSubHandler;
 import dev.azuuure.jellychats.connection.messaging.impl.VelocityRedisPubSubHandler;
 import dev.azuuure.jellychats.messenger.PrivateChatMessenger;
 import org.slf4j.Logger;
+import org.spongepowered.configurate.ConfigurationNode;
 import redis.clients.jedis.Jedis;
 
 public class RedisPrivateChatMessenger implements PrivateChatMessenger {
@@ -30,7 +31,21 @@ public class RedisPrivateChatMessenger implements PrivateChatMessenger {
         this.gson = gson;
         this.config = config;
         this.chatManager = chatManager;
-        this.connection = new DefaultRedisConnection(config.getString("redis.uri", "redis://localhost:6379"));
+
+        ConfigurationNode parent = config.getConfigurationNode().node("redis");
+        String uri = parent.node("uri").getString();
+
+        if (uri != null && !uri.isBlank()) {
+            this.connection = new DefaultRedisConnection(uri);
+        } else {
+            this.connection = new DefaultRedisConnection(
+                    parent.node("hostname").getString("127.0.0.1"),
+                    parent.node("port").getInt(6379),
+                    parent.node("username").getString(),
+                    parent.node("password").getString()
+            );
+        }
+
         this.pubSubHandler = new VelocityRedisPubSubHandler(server, logger, connection);
     }
 

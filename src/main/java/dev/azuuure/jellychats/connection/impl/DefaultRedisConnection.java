@@ -63,11 +63,14 @@ public class DefaultRedisConnection implements RedisConnection<Jedis> {
         config.setTimeBetweenEvictionRuns(Duration.ofMillis(15000));
         config.setTestWhileIdle(true);
 
+        boolean hasUsername = username != null && !username.isBlank();
+        boolean hasPassword = password != null && !password.isBlank();
+
         if (uri != null) {
             this.pool = new JedisPool(config, uri);
-        } else if (username != null && password != null) {
+        } else if (hasUsername && hasPassword) {
             this.pool = new JedisPool(config, hostname, port, RedisUtils.DEFAULT_TIMEOUT, username, password);
-        } else if (password != null) {
+        } else if (hasPassword) {
             this.pool = new JedisPool(config, hostname, port, RedisUtils.DEFAULT_TIMEOUT, password);
         } else {
             this.pool = new JedisPool(config, hostname, port);
