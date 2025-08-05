@@ -9,6 +9,8 @@ public class MessengerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        this.bind(PrivateChatMessenger.class).to(RedisPrivateChatMessenger.class).in(Scopes.SINGLETON);
+        this.bind(PrivateChatMessenger.class)
+                .to(RedisPrivateChatMessenger.class)
+                .in(Scopes.SINGLETON);
     }
 }

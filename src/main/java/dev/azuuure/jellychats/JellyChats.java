@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.azuuure.jellychats.chat.manager.ChatManager;
@@ -15,7 +16,10 @@ import dev.azuuure.jellychats.messenger.PrivateChatMessenger;
 import dev.azuuure.jellychats.modules.ChatModule;
 import dev.azuuure.jellychats.modules.ConfigurationModule;
 import dev.azuuure.jellychats.modules.MessengerModule;
+import dev.azuuure.jellychats.modules.RankProviderModule;
+import dev.azuuure.jellychats.rank.RankProvider;
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 
 @Plugin(
@@ -23,13 +27,19 @@ import org.slf4j.Logger;
         name = "JellyChats",
         description = "Highly customizable Redis-based private chats for Velocity proxies",
         authors = { "azurejelly" },
-        version = BuildConstants.VERSION
+        version = BuildConstants.VERSION,
+        dependencies = {
+                @Dependency(id = "luckperms", optional = true)
+        }
 )
 public class JellyChats {
 
     private final ProxyServer server;
     private final Logger logger;
     private final Injector injector;
+
+    @Getter
+    private RankProvider rankProvider;
 
     @Getter
     private Configuration configuration;
@@ -45,6 +55,7 @@ public class JellyChats {
         this.server = server;
         this.logger = logger;
         this.injector = injector.createChildInjector(
+                new RankProviderModule(),
                 new ConfigurationModule(),
                 new MessengerModule(),
                 new ChatModule()
@@ -55,7 +66,9 @@ public class JellyChats {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         long start = System.currentTimeMillis();
 
+        rankProvider = injector.getInstance(RankProvider.class);
         configuration = injector.getInstance(Configuration.class);
+
         chatManager = injector.getInstance(ChatManager.class);
         chatManager.initialize();
 

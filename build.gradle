@@ -16,15 +16,15 @@ repositories {
 
 dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
-
     compileOnly("org.projectlombok:lombok:1.18.38")
-    annotationProcessor("org.projectlombok:lombok:1.18.38")
+    compileOnly("net.luckperms:api:5.4")
 
     implementation("redis.clients:jedis:6.0.0")
     implementation("org.apache.commons:commons-pool2:2.12.1")
     implementation("org.spongepowered:configurate-yaml:4.2.0")
-//    implementation("org.incendo:cloud-velocity:2.0.0-beta.10")
+
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
 }
 
 tasks {

@@ -9,6 +9,8 @@ public class ChatModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        this.bind(ChatManager.class).to(DefaultChatManager.class).in(Scopes.SINGLETON);
+        this.bind(ChatManager.class)
+                .to(DefaultChatManager.class)
+                .in(Scopes.SINGLETON);
     }
 }

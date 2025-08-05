@@ -9,6 +9,11 @@ console-server: "N/A"
 unknown-server: "N/A"
 show-init-times: true
 default-channel-prefix: "jelly-chats/"
+ranks:
+  prefer-legacy: false
+  append-space:
+    prefix: false
+    suffix: false
 chats:
   staff:
     enabled: true
@@ -38,6 +43,6 @@ messages:
   usage: "<red>Usage: /<name> <message></red>"
   chat-disabled: "<red>Sorry, that private chat is disabled.</red>"
   formatting:
-    staff: "<color:#15c224>[STAFF] (<server>)</color> <color:#5fd961><author>:</color> <content>"
-    admin: "<color:#ff2b39>[ADMIN] (<server>)</color> <color:#ff6973><author>:</color> <content>"
-    fallback: "<color:#ff59e3>[<chat>] (<server>)</color> <color:#ffabf2><player>:</color> <content>"
+    staff: "<color:#15c224>[STAFF] (<server>)</color> <prefix><color:#5fd961><author>:</color> <content>"
+    admin: "<color:#ff2b39>[ADMIN] (<server>)</color> <prefix><color:#ff6973><author>:</color> <content>"
+    fallback: "<color:#ff59e3>[<chat>] (<server>)</color> <prefix><color:#ffabf2><player>:</color> <content>"
