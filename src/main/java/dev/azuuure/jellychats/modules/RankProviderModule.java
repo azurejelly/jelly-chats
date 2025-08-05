@@ -17,12 +17,12 @@ public class RankProviderModule extends AbstractModule {
     public RankProvider getRankProvider(ProxyServer server, Logger logger) {
         PluginManager pluginManager = server.getPluginManager();
         if (pluginManager.isLoaded("luckperms")) {
-            logger.info("Will use LuckPerms to obtain player ranks");
+            logger.info("Will use LuckPerms to obtain player ranks.");
             return new LuckPermsRankProvider();
         }
 
-        logger.info("No compatible rank providers were found. Defaulting to a dummy implementation.");
-        logger.info("No ranks will be shown in private chats.");
+        logger.warn("No compatible rank providers were found. Defaulting to a dummy implementation.");
+        logger.warn("No ranks will be shown in private chats.");
         return new DummyRankProvider();
     }
 }
