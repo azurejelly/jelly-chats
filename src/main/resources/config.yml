@@ -6,12 +6,13 @@ redis:
   uri: "redis://localhost:6379"
 console-name: "Console"
 show-init-times: true
+default-channel-prefix: "jelly-chats/"
 chats:
   staff:
     enabled: true
     name: "Staff"
-    channel: "staff-chat/staff"
-    permission: "staff-chat.chat.staff"
+    channel: "jelly-chats/staff"
+    permission: "jelly-chats.chat.staff"
     command:
       main: "staff-chat"
       aliases:
@@ -22,8 +23,8 @@ chats:
   admin:
     enabled: true
     name: "Admin"
-    channel: "staff-chat/admin"
-    permission: "staff-chat.chat.admin"
+    channel: "jelly-chats/admin"
+    permission: "jelly-chats.chat.admin"
     command:
       main: "admin-chat"
       aliases:
