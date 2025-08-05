@@ -6,9 +6,6 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-group = 'dev.azuuure'
-version = '1.0.0'
-
 repositories {
     mavenCentral()
     maven {
