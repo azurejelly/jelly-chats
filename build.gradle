@@ -69,10 +69,14 @@ sourceSets.main.java.srcDir(generateTemplates.map { it.outputs })
 project.idea.project.settings.taskTriggers.afterSync generateTemplates
 project.eclipse.synchronizationTasks(generateTemplates)
 
+tasks.named("build") {
+    dependsOn tasks.named("shadowJar")
+}
+
 tasks {
     shadowJar {
         relocate("redis.clients.jedis", "dev.azuuure.staffchat.libs.jedis")
         relocate("org.apache.commons.pool2", "dev.azuuure.staffchat.libs.pool2")
-        archiveFileName.set("staff-chat.jar")
+        archiveFileName.set("staff-chat-${project.version}-dist.jar")
     }
 }
