@@ -3,14 +3,14 @@ package dev.azuuure.staffchat.listener;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.proxy.ProxyServer;
-import dev.azuuure.staffchat.channel.PrivateChannel;
-import dev.azuuure.staffchat.channel.message.PrivateChannelMessage;
+import dev.azuuure.staffchat.chat.message.PrivateChatMessage;
+import dev.azuuure.staffchat.chat.PrivateChat;
 import dev.azuuure.staffchat.configuration.Configuration;
-import dev.azuuure.staffchat.event.PrivateChannelMessageEvent;
+import dev.azuuure.staffchat.event.PrivateChatMessageEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
-public class PrivateChannelMessageListener {
+public class PrivateChatMessageListener {
 
     @Inject
     private ProxyServer server;
@@ -19,18 +19,22 @@ public class PrivateChannelMessageListener {
     private Configuration configuration;
 
     @Subscribe
-    public void onPrivateChannelMessageEvent(PrivateChannelMessageEvent event) {
-        PrivateChannel channel = event.channel();
-        PrivateChannelMessage message = event.message();
+    public void onPrivateChannelMessageEvent(PrivateChatMessageEvent event) {
+        PrivateChat chat = event.chat();
+        PrivateChatMessage message = event.message();
 
-        Component component = configuration.getComponent("channels.format." + channel.getType(),
+        boolean hasFormat = configuration.getConfigurationNode().hasChild("messages", "formatting", chat.id());
+        String preferredType = hasFormat ? chat.id() : "fallback";
+
+        Component component = configuration.getComponent("messages.formatting." + preferredType,
+                Placeholder.unparsed("name", chat.name()),
                 Placeholder.unparsed("author", message.author()),
                 Placeholder.unparsed("content", message.content())
         );
 
         server.getConsoleCommandSource().sendMessage(component);
         server.getAllPlayers().forEach(player -> {
-            if (!player.hasPermission(channel.getPermission())) {
+            if (!player.hasPermission(chat.permission())) {
                 return;
             }
 

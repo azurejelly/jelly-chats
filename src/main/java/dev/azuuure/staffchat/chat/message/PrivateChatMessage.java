@@ -1,4 +1,4 @@
-package dev.azuuure.staffchat.channel.message;
+package dev.azuuure.staffchat.chat.message;
 
 /**
  * Represents a content sent to a private channel.
@@ -7,7 +7,7 @@ package dev.azuuure.staffchat.channel.message;
  * @param content The content.
  * @author azurejelly
  */
-public record PrivateChannelMessage(
+public record PrivateChatMessage(
         String author,
         String content
 ) {}

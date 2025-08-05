@@ -7,14 +7,15 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
-import dev.azuuure.staffchat.commands.AdminChatCommand;
-import dev.azuuure.staffchat.commands.StaffChatCommand;
+import dev.azuuure.staffchat.chat.manager.ChatManager;
 import dev.azuuure.staffchat.configuration.Configuration;
 import dev.azuuure.staffchat.listener.JedisMessageListener;
-import dev.azuuure.staffchat.listener.PrivateChannelMessageListener;
-import dev.azuuure.staffchat.messenger.PrivateChannelMessenger;
-import dev.azuuure.staffchat.messenger.impl.RedisPrivateChannelMessenger;
+import dev.azuuure.staffchat.listener.PrivateChatMessageListener;
+import dev.azuuure.staffchat.messenger.PrivateChatMessenger;
+import dev.azuuure.staffchat.modules.ChatModule;
 import dev.azuuure.staffchat.modules.ConfigurationModule;
+import dev.azuuure.staffchat.modules.MessengerModule;
+import lombok.Getter;
 import org.slf4j.Logger;
 
 @Plugin(
@@ -29,14 +30,25 @@ public class StaffChat {
     private final ProxyServer server;
     private final Logger logger;
     private final Injector injector;
+
+    @Getter
     private Configuration configuration;
-    private PrivateChannelMessenger messenger;
+
+    @Getter
+    private PrivateChatMessenger messenger;
+
+    @Getter
+    private ChatManager chatManager;
 
     @Inject
     public StaffChat(ProxyServer server, Logger logger, Injector injector) {
         this.server = server;
         this.logger = logger;
-        this.injector = injector.createChildInjector(new ConfigurationModule());
+        this.injector = injector.createChildInjector(
+                new ConfigurationModule(),
+                new MessengerModule(),
+                new ChatModule()
+        );
     }
 
     @Subscribe
@@ -44,30 +56,14 @@ public class StaffChat {
         long start = System.currentTimeMillis();
 
         configuration = injector.getInstance(Configuration.class);
+        chatManager = injector.getInstance(ChatManager.class);
+        chatManager.initialize();
 
-        messenger = injector.getInstance(RedisPrivateChannelMessenger.class);
+        messenger = injector.getInstance(PrivateChatMessenger.class);
         messenger.initialize();
 
-        server.getEventManager().register(this, injector.getInstance(PrivateChannelMessageListener.class));
+        server.getEventManager().register(this, injector.getInstance(PrivateChatMessageListener.class));
         server.getEventManager().register(this, injector.getInstance(JedisMessageListener.class));
-
-        server.getCommandManager().register(
-                server.getCommandManager()
-                        .metaBuilder("staff-chat")
-                        .aliases("staffchat", "sc", "s")
-                        .plugin(this)
-                        .build(),
-                new StaffChatCommand(messenger, configuration)
-        );
-
-        server.getCommandManager().register(
-                server.getCommandManager()
-                        .metaBuilder("admin-chat")
-                        .aliases("adminchat", "ac", "a")
-                        .plugin(this)
-                        .build(),
-                new AdminChatCommand(messenger, configuration)
-        );
 
         long end = System.currentTimeMillis();
         if (configuration.getBoolean("show-init-times", true)) {
@@ -78,6 +74,7 @@ public class StaffChat {
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
         long start = System.currentTimeMillis();
+        chatManager.shutdown();
         messenger.shutdown();
 
         long end = System.currentTimeMillis();

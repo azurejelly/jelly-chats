@@ -1,12 +1,40 @@
 redis:
+  hostname: 127.0.0.1
+  port: 6379
+  username: ""
+  password: ""
   uri: "redis://localhost:6379"
 console-name: "Console"
 show-init-times: true
-channels:
-  format:
+chats:
+  staff:
+    enabled: true
+    name: "Staff"
+    channel: "staff-chat/staff"
+    permission: "staff-chat.chat.staff"
+    command:
+      main: "staff-chat"
+      aliases:
+        - "s"
+        - "sc"
+        - "staffchat"
+        - "staff"
+  admin:
+    enabled: true
+    name: "Admin"
+    channel: "staff-chat/admin"
+    permission: "staff-chat.chat.admin"
+    command:
+      main: "admin-chat"
+      aliases:
+        - "a"
+        - "ac"
+        - "adminchat"
+        - "admin"
+messages:
+  usage: "<red>Usage: /<name> <message></red>"
+  chat-disabled: "<red>Sorry, that private chat is disabled.</red>"
+  formatting:
     staff: "<color:#15c224>[STAFF]</color> <color:#5fd961><author>:</color> <content>"
     admin: "<color:#ff2b39>[ADMIN]</color> <color:#ff6973><author>:</color> <content>"
-commands:
-  usage:
-    admin: "<red>Usage: /admin-chat <message></red>"
-    staff: "<red>Usage: /staff-chat <message></red>"
+    fallback: "<dark_aqua>[<chat>]</dark_aqua> <aqua><player>:</aqua> <content>"
