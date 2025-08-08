@@ -107,7 +107,7 @@ public class DefaultChatManager implements ChatManager {
 
     @Override
     public void register(PrivateChat chat) {
-        chats.put(chat.id(), chat);
+        chats.put(chat.id().toLowerCase(), chat);
     }
 
     @Override
