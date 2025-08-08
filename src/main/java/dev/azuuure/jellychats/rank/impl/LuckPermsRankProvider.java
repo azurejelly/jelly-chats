@@ -23,7 +23,13 @@ public class LuckPermsRankProvider implements RankProvider {
         }
 
         CachedMetaData metadata = user.getCachedData().getMetaData();
-        return metadata.getPrefix();
+        String prefix = metadata.getPrefix();
+
+        if (prefix == null) {
+            return "";
+        }
+
+        return prefix;
     }
 
     @Override
@@ -34,6 +40,12 @@ public class LuckPermsRankProvider implements RankProvider {
         }
 
         CachedMetaData metadata = user.getCachedData().getMetaData();
-        return metadata.getSuffix();
+        String suffix = metadata.getSuffix();
+
+        if (suffix == null) {
+            return "";
+        }
+
+        return suffix;
     }
 }
