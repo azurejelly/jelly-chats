@@ -40,7 +40,7 @@ public class DefaultChatManager implements ChatManager {
     @Override
     public void initialize() {
         CommandManager commandManager = server.getCommandManager();
-        ConfigurationNode base = configuration.getConfigurationNode().node("chats");
+        ConfigurationNode base = configuration.getRootNode().node("chats");
         String channelPrefix = configuration.getString("default-channel-prefix", "jelly-chats/");
 
         base.childrenMap().forEach((k, v) -> {
@@ -92,11 +92,17 @@ public class DefaultChatManager implements ChatManager {
                 }
 
                 commandManager.register(metaBuilder.build(), command);
-                chats.put(id, chat);
+                chats.put(id.toLowerCase(), chat);
             } catch (SerializationException e) {
                 logger.warn("Failed to load and register private chat identified by '{}'", k, e);
             }
         });
+    }
+
+    @Override
+    public void reload() {
+        this.shutdown();
+        this.initialize();
     }
 
     @Override
@@ -127,7 +133,12 @@ public class DefaultChatManager implements ChatManager {
 
     @Override
     public void shutdown() {
-        chats.values().forEach((chat) -> server.getCommandManager().unregister(chat.command().main()));
+        chats.forEach((id,chat) -> {
+            logger.info("Unregistering chat with ID '{}'", id);
+            server.getCommandManager().unregister(chat.command().main());
+            chat.command().aliases().forEach(alias -> server.getCommandManager().unregister(alias));
+        });
+
         chats.clear();
     }
 }

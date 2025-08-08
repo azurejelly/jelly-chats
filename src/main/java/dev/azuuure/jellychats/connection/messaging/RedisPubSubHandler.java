@@ -2,6 +2,8 @@ package dev.azuuure.jellychats.connection.messaging;
 
 public interface RedisPubSubHandler {
 
+    void initialize();
+
     boolean active();
 
     void subscribe(String channel);

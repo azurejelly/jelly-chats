@@ -2,13 +2,14 @@ package dev.azuuure.jellychats;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
-import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.azuuure.jellychats.chat.manager.ChatManager;
+import dev.azuuure.jellychats.commands.MainCommand;
 import dev.azuuure.jellychats.configuration.Configuration;
 import dev.azuuure.jellychats.listener.JedisMessageListener;
 import dev.azuuure.jellychats.listener.PrivateChatMessageListener;
@@ -19,7 +20,6 @@ import dev.azuuure.jellychats.modules.MessengerModule;
 import dev.azuuure.jellychats.modules.RankProviderModule;
 import dev.azuuure.jellychats.rank.RankProvider;
 import lombok.Getter;
-import lombok.Setter;
 import org.slf4j.Logger;
 
 @Plugin(
@@ -77,6 +77,14 @@ public class JellyChats {
 
         server.getEventManager().register(this, injector.getInstance(PrivateChatMessageListener.class));
         server.getEventManager().register(this, injector.getInstance(JedisMessageListener.class));
+
+        server.getCommandManager().register(
+                server.getCommandManager().metaBuilder("jelly-chats")
+                        .aliases("chats", "private-chats", "privatechats")
+                        .plugin(this)
+                        .build(),
+                injector.getInstance(MainCommand.class)
+        );
 
         long end = System.currentTimeMillis();
         if (configuration.getBoolean("show-init-times", true)) {

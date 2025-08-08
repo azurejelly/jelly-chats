@@ -8,6 +8,8 @@ public interface ChatManager {
 
     void initialize();
 
+    void reload();
+
     void register(PrivateChat chat);
 
     PrivateChat find(String id);

@@ -1,6 +1,5 @@
 package dev.azuuure.jellychats.connection.messaging.impl;
 
-import com.google.inject.Inject;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.azuuure.jellychats.connection.RedisConnection;
 import dev.azuuure.jellychats.connection.messaging.RedisPubSubHandler;
@@ -13,23 +12,33 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class VelocityRedisPubSubHandler implements RedisPubSubHandler {
 
     private final ProxyServer server;
     private final Logger logger;
-    private final Map<String, JedisPubSub> subscriptions;
-    private final ExecutorService executorService;
     private final RedisConnection<Jedis> connection;
+
+    private Map<String, JedisPubSub> subscriptions;
+    private ExecutorService executorService;
     private volatile boolean running;
 
-    @Inject
     public VelocityRedisPubSubHandler(ProxyServer server, Logger logger, RedisConnection<Jedis> connection) {
         this.server = server;
         this.logger = logger;
-        this.subscriptions = new ConcurrentHashMap<>();
-        this.executorService = Executors.newCachedThreadPool();
         this.connection = connection;
+        this.running = false;
+    }
+
+    @Override
+    public void initialize() {
+        if (running) {
+            throw new IllegalStateException("Attempted to initialize a pub-sub handler that is already active");
+        }
+
+        this.executorService = Executors.newCachedThreadPool();
+        this.subscriptions = new ConcurrentHashMap<>();
         this.running = true;
     }
 
@@ -44,7 +53,6 @@ public class VelocityRedisPubSubHandler implements RedisPubSubHandler {
             throw new RuntimeException("Pub-sub handler is inactive");
         }
 
-        unsubscribe(channel);
         JedisPubSub pubSub = new JedisPubSub() {
             @Override
             public void onMessage(String channelName, String message) {
@@ -59,17 +67,13 @@ public class VelocityRedisPubSubHandler implements RedisPubSubHandler {
 
         subscriptions.put(channel, pubSub);
         executorService.submit(() -> {
-            while (running) {
+            while (running && pubSub.equals(subscriptions.get(channel))) {
                 try (Jedis jedis = connection.get()) {
                     jedis.subscribe(pubSub, channel);
                 } catch (Exception ex) {
                     // i kinda hate this
                     logger.warn("Failed to subscribe to Redis channel '{}'", channel, ex);
                     subscriptions.remove(channel);
-                }
-
-                if (!running) {
-                    break;
                 }
 
                 try {
@@ -112,14 +116,17 @@ public class VelocityRedisPubSubHandler implements RedisPubSubHandler {
             throw new RuntimeException("Pub-sub handler is inactive");
         }
 
-        subscriptions.forEach((ch, pubSub) -> {
-            if (pubSub.isSubscribed()) {
-                pubSub.unsubscribe(ch);
-            }
-        });
+        this.subscriptions.values().forEach(JedisPubSub::unsubscribe);
+        this.running = false;
+        this.subscriptions = null;
+        this.executorService.shutdownNow();
 
-        running = false;
-        subscriptions.clear();
-        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                logger.warn("Pub-sub handler executor service did not terminate within timeout!");
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 } 

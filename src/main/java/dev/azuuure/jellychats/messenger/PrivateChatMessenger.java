@@ -7,6 +7,8 @@ public interface PrivateChatMessenger {
 
     void initialize();
 
+    void reload();
+
     void send(CommandSource source, PrivateChat chat, String message);
 
     void shutdown();

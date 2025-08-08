@@ -5,7 +5,10 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.BufferedInputStream;
@@ -21,7 +24,10 @@ public class Configuration {
     private final String name;
 
     @Getter
-    private ConfigurationNode configurationNode;
+    private ConfigurationNode rootNode;
+
+    @Getter
+    private YamlConfigurationLoader configurationLoader;
 
     public Configuration(Path path, String name) throws IOException {
         this.name = name.endsWith(".yml") ? name : name + ".yml";
@@ -51,14 +57,77 @@ public class Configuration {
             }
         }
 
-        this.configurationNode = YamlConfigurationLoader.builder()
+        this.configurationLoader = YamlConfigurationLoader.builder()
                 .path(path)
-                .build()
-                .load();
+                .indent(2)
+                .nodeStyle(NodeStyle.BLOCK)
+                .build();
+
+        this.rootNode = configurationLoader.load();
+    }
+
+    public void reload() throws ConfigurateException {
+        if (configurationLoader == null) {
+            throw new IllegalStateException("Cannot reload a file that hasn't been loaded yet");
+        }
+
+        this.rootNode = configurationLoader.load();
+    }
+
+    public void save() throws ConfigurateException {
+        if (configurationLoader == null) {
+            throw new IllegalStateException("Cannot save a file that hasn't been loaded");
+        }
+
+        this.configurationLoader.save(rootNode);
+    }
+
+    public void set(String path, Object value) throws SerializationException {
+        rootNode.node(Splitter.on('.').splitToList(path)).set(value);
+    }
+
+    public void set(String path, String value) {
+        try {
+            rootNode.node(Splitter.on('.').splitToList(path)).set(value);
+        } catch (SerializationException e) {
+            throw new RuntimeException("This shouldn't happen", e);
+        }
+    }
+
+    public void set(String path, int value) {
+        try {
+            rootNode.node(Splitter.on('.').splitToList(path)).set(value);
+        } catch (SerializationException e) {
+            throw new RuntimeException("This shouldn't happen", e);
+        }
+    }
+
+    public void set(String path, double value) {
+        try {
+            rootNode.node(Splitter.on('.').splitToList(path)).set(value);
+        } catch (SerializationException e) {
+            throw new RuntimeException("This shouldn't happen", e);
+        }
+    }
+
+    public void set(String path, float value) {
+        try {
+            rootNode.node(Splitter.on('.').splitToList(path)).set(value);
+        } catch (SerializationException e) {
+            throw new RuntimeException("This shouldn't happen", e);
+        }
+    }
+
+    public void set(String path, boolean value) {
+        try {
+            rootNode.node(Splitter.on('.').splitToList(path)).set(value);
+        } catch (SerializationException e) {
+            throw new RuntimeException("This shouldn't happen", e);
+        }
     }
 
     private ConfigurationNode getPath(String path) {
-        return configurationNode.node(Splitter.on('.').splitToList(path));
+        return rootNode.node(Splitter.on('.').splitToList(path));
     }
 
     public String getString(String path, String def) {
@@ -82,12 +151,20 @@ public class Configuration {
     }
 
     public Component getComponent(String path) {
-        String raw = getString(path, path);
-        return MiniMessage.miniMessage().deserialize(raw);
+        return getComponent(path, path);
     }
 
     public Component getComponent(String path, TagResolver... resolvers) {
-        String raw = getString(path, path);
+        return getComponent(path, path, resolvers);
+    }
+
+    public Component getComponent(String path, String def) {
+        String raw = getString(path, def);
+        return MiniMessage.miniMessage().deserialize(raw);
+    }
+
+    public Component getComponent(String path, String def, TagResolver... resolvers) {
+        String raw = getString(path, def);
         return MiniMessage.miniMessage().deserialize(raw, resolvers);
     }
 }

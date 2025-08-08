@@ -5,67 +5,47 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import dev.azuuure.jellychats.chat.message.PrivateChatMessage;
 import dev.azuuure.jellychats.chat.PrivateChat;
 import dev.azuuure.jellychats.chat.manager.ChatManager;
+import dev.azuuure.jellychats.chat.message.PrivateChatMessage;
 import dev.azuuure.jellychats.configuration.Configuration;
 import dev.azuuure.jellychats.connection.RedisConnection;
-import dev.azuuure.jellychats.connection.impl.DefaultRedisConnection;
 import dev.azuuure.jellychats.connection.messaging.RedisPubSubHandler;
 import dev.azuuure.jellychats.connection.messaging.impl.VelocityRedisPubSubHandler;
 import dev.azuuure.jellychats.messenger.PrivateChatMessenger;
 import dev.azuuure.jellychats.rank.RankProvider;
+import dev.azuuure.jellychats.utils.RedisUtils;
 import org.slf4j.Logger;
-import org.spongepowered.configurate.ConfigurationNode;
 import redis.clients.jedis.Jedis;
 
 public class RedisPrivateChatMessenger implements PrivateChatMessenger {
 
-    private final Gson gson;
-    private final Configuration config;
-    private final ChatManager chatManager;
-    private final RankProvider rankProvider;
-    private final RedisConnection<Jedis> connection;
-    private final RedisPubSubHandler pubSubHandler;
+    @Inject private Gson gson;
+    @Inject private Configuration config;
+    @Inject private ChatManager chatManager;
+    @Inject private RankProvider rankProvider;
+    @Inject private ProxyServer server;
+    @Inject private Logger logger;
 
-    @Inject
-    public RedisPrivateChatMessenger(
-            Gson gson,
-            Configuration config,
-            ChatManager chatManager,
-            RankProvider rankProvider,
-            ProxyServer server,
-            Logger logger
-    ) {
-        this.gson = gson;
-        this.config = config;
-        this.chatManager = chatManager;
-        this.rankProvider = rankProvider;
-
-        ConfigurationNode parent = config.getConfigurationNode().node("redis");
-        String uri = parent.node("uri").getString();
-
-        if (uri != null && !uri.isBlank()) {
-            this.connection = new DefaultRedisConnection(uri);
-        } else {
-            this.connection = new DefaultRedisConnection(
-                    parent.node("hostname").getString("127.0.0.1"),
-                    parent.node("port").getInt(6379),
-                    parent.node("username").getString(),
-                    parent.node("password").getString()
-            );
-        }
-
-        this.pubSubHandler = new VelocityRedisPubSubHandler(server, logger, connection);
-    }
+    private RedisConnection<Jedis> connection;
+    private RedisPubSubHandler pubSubHandler;
 
     @Override
     public void initialize() {
-        connection.connect();
-        chatManager.findAll()
+        this.connection = RedisUtils.buildFrom(config);
+        this.pubSubHandler = new VelocityRedisPubSubHandler(server, logger, connection);
+        this.connection.connect();
+        this.pubSubHandler.initialize();
+        this.chatManager.findAll()
                 .stream()
                 .map(PrivateChat::channel)
                 .forEach(pubSubHandler::subscribe);
+    }
+
+    @Override
+    public void reload() {
+        this.shutdown();
+        this.initialize();
     }
 
     @Override

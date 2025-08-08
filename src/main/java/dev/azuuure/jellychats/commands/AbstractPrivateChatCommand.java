@@ -22,7 +22,7 @@ public abstract class AbstractPrivateChatCommand implements SimpleCommand {
         if (args.length == 0) {
             source.sendMessage(
                     configuration().getComponent("messages.usage",
-                            Placeholder.unparsed("name", chat().command().main())
+                            Placeholder.unparsed("usage", chat().command().main() + " <message>")
                     )
             );
         } else {

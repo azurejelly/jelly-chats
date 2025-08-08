@@ -40,8 +40,18 @@ chats:
         - "adminchat"
         - "admin"
 messages:
-  usage: "<red>Usage: /<name> <message></red>"
-  chat-disabled: "<red>Sorry, that private chat is disabled.</red>"
+  usage: "<color:#ff2b39><b>ⓘ</b></color> Usage: <color:#ff6973>/<usage></color>"
+  chat-disabled: "<color:#ff2b39><b>ⓘ</b></color> Sorry, that private chat is currently <color:#ff6973>disabled</color>."
+  main:
+    no-args: "<color:#e64093><b>ⓘ</b></color> Running <color:#e667b5>jelly-chats</color> version <color:#e667b5><version></color>."
+    unknown-args: "<color:#e64093><b>ⓘ</b></color> Sorry, that command does not exist. Use <color:#e667b5>/jelly-chats help</color> for help."
+    help: "<color:#e64093><b>ⓘ</b></color> Command list<newline><color:#e667b5>- <click:suggest_command:'/jelly-chats reload'>/jelly-chats reload:</click></color> reloads the plugin<newline><color:#e667b5>- <click:suggest_command:'/jelly-chats toggle'>/jelly-chats toggle <id>:</click></color> enables or disables a chat by ID"
+    toggle:
+      enabled: "<color:#15c224><b>ⓘ</b></color> Chat <color:#5fd961><name></color> has been enabled."
+      disabled: "<color:#ff2b39><b>ⓘ</b></color> Chat <color:#ff6973><name></color> has been disabled."
+    reload:
+      success: "<color:#15c224><b>ⓘ</b></color> Plugin reloaded in <color:#5fd961><time> ms</color>."
+      fail: "<color:#ff2b39><b>ⓘ</b></color> Reload failed after <color:#ff6973><time> ms</color>. For more details, check the proxy's console."
   formatting:
     staff: "<color:#15c224>[STAFF] (<server>)</color> <prefix><color:#5fd961><author>:</color> <content>"
     admin: "<color:#ff2b39>[ADMIN] (<server>)</color> <prefix><color:#ff6973><author>:</color> <content>"
