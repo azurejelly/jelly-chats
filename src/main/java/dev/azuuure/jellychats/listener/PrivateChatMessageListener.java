@@ -7,6 +7,7 @@ import dev.azuuure.jellychats.chat.message.PrivateChatMessage;
 import dev.azuuure.jellychats.chat.PrivateChat;
 import dev.azuuure.jellychats.configuration.Configuration;
 import dev.azuuure.jellychats.event.PrivateChatMessageEvent;
+import dev.azuuure.jellychats.utils.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -27,26 +28,18 @@ public class PrivateChatMessageListener {
         PrivateChatMessage message = event.message();
 
         ConfigurationNode spacing = config.getConfigurationNode().node("ranks", "append-space");
-        String rawPrefix = message.prefix();
-        String rawSuffix = message.suffix();
+        String prefix = message.prefix();
+        String suffix = message.suffix();
 
         if (spacing.node("prefix").getBoolean(false)) {
-            rawPrefix += " ";
+            prefix += " ";
         }
 
         if (spacing.node("suffix").getBoolean(false)) {
-            rawSuffix = " " + rawSuffix;
+            suffix = " " + suffix;
         }
 
         boolean preferLegacy = config.getBoolean("ranks.prefer-legacy", false);
-        Component prefix = preferLegacy
-                ? LegacyComponentSerializer.legacyAmpersand().deserialize(rawPrefix)
-                : MiniMessage.miniMessage().deserialize(rawPrefix);
-
-        Component suffix = preferLegacy
-                ? LegacyComponentSerializer.legacyAmpersand().deserialize(rawSuffix)
-                : MiniMessage.miniMessage().deserialize(rawSuffix);
-
         boolean hasFormat = config.getConfigurationNode().hasChild("messages", "formatting", chat.id());
         String preferredType = hasFormat ? chat.id() : "fallback";
 
@@ -55,8 +48,8 @@ public class PrivateChatMessageListener {
                 Placeholder.unparsed("server", message.server()),
                 Placeholder.unparsed("author", message.author()),
                 Placeholder.unparsed("content", message.content()),
-                Placeholder.component("prefix", prefix),
-                Placeholder.component("suffix", suffix)
+                Placeholder.component("prefix", ComponentUtil.toComponent(prefix, preferLegacy)),
+                Placeholder.component("suffix", ComponentUtil.toComponent(suffix, preferLegacy))
         );
 
         server.getConsoleCommandSource().sendMessage(component);
