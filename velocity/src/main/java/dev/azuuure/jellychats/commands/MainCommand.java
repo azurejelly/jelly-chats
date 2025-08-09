@@ -15,17 +15,10 @@ import org.spongepowered.configurate.ConfigurateException;
 // FIXME: should probably use a command manager
 public class MainCommand implements SimpleCommand {
 
-    @Inject
-    private Configuration config;
-
-    @Inject
-    private Logger logger;
-
-    @Inject
-    private ChatManager chatManager;
-
-    @Inject
-    private ChatMessenger messenger;
+    @Inject private Configuration config;
+    @Inject private Logger logger;
+    @Inject private ChatManager chatManager;
+    @Inject private ChatMessenger messenger;
 
     @Override
     public void execute(Invocation invocation) {
