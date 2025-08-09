@@ -7,6 +7,7 @@ import lombok.Builder;
  *
  * @param author The author of the content.
  * @param content The content.
+ * @since 1.2.0
  * @author azurejelly
  */
 @Builder(builderClassName = "Builder")

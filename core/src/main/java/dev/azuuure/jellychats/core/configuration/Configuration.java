@@ -19,6 +19,18 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Handles configuration files with Sponge's
+ * <a href="https://github.com/SpongePowered/Configurate">configurate</a> library
+ * (more specifically, the YAML implementation).
+ * <p>
+ * Many of the methods here are not intended to be used by other plugins,
+ * and as such, are not documented.
+ *
+ * @since 1.2.0
+ * @author azurejelly
+ */
+// in reality it's just a stupid excuse i just dont feel like doing more javadocs lmao
 public class Configuration {
 
     private final Path path;

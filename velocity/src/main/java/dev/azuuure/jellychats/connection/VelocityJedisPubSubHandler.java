@@ -25,7 +25,7 @@ public class VelocityJedisPubSubHandler extends AbstractJedisPubSubHandler {
     }
 
     @Override
-    protected void onJedisMessage(String channel, String message) {
+    protected void onRedisMessage(String channel, String message) {
         JedisMessageEvent event = new JedisMessageEvent(channel, message);
         server.getEventManager().fireAndForget(event);
     }

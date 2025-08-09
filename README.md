@@ -80,7 +80,7 @@ something like:
 
 ```java
 RankManager rankManager = new MyRankManager();
-JellyChatsPlugin plugin = VelocityJellyChatsPlugin.getInstance();
+JellyChatsPlugin plugin = JellyChatsPluginProvider.getInstance();
 plugin.setRankManager(rankManager);
 ```
 

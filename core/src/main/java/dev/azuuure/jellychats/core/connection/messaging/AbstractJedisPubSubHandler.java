@@ -10,6 +10,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Uses Jedis to receive and send messages through Redis.
+ *
+ * @author azurejelly
+ * @since 1.2.0
+ */
 public abstract class AbstractJedisPubSubHandler implements RedisPubSubHandler {
 
     private Map<String, JedisPubSub> subscriptions;
@@ -45,7 +51,7 @@ public abstract class AbstractJedisPubSubHandler implements RedisPubSubHandler {
                     return;
                 }
 
-                onJedisMessage(channelName, message);
+                onRedisMessage(channelName, message);
             }
         };
 
@@ -113,11 +119,36 @@ public abstract class AbstractJedisPubSubHandler implements RedisPubSubHandler {
         }
     }
 
+    /**
+     * Should provide the {@link Jedis} based {@link RedisConnection}
+     * to be used with this pub-sub handler.
+     *
+     * @return A {@link Jedis} based {@link RedisConnection}.
+     */
     protected abstract RedisConnection<Jedis> connection();
 
-    protected abstract void onJedisMessage(String channel, String message);
+    /**
+     * Called when a message is received through Redis.
+     *
+     * @param channel The channel the message was received through.
+     * @param message The content of the message as a {@link String}.
+     */
+    protected abstract void onRedisMessage(String channel, String message);
 
+    /**
+     * Called when an error occurs on a subscription thread.
+     *
+     * @param channel The channel the exception occurred in.
+     * @param ex The exception that was caught.
+     */
     protected abstract void onSubscriptionException(String channel, Exception ex);
 
+    /**
+     * Called when the {@link ExecutorService} in use takes too long to shut down
+     * and is forcibly terminated.
+     * <p>
+     * This method only really exists because different platforms use different
+     * logging methods.
+     */
     protected abstract void onShutdownTimeout();
 }

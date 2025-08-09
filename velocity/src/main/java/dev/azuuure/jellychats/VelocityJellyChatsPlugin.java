@@ -11,6 +11,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import dev.azuuure.jellychats.commands.MainCommand;
 import dev.azuuure.jellychats.core.BuildConstants;
 import dev.azuuure.jellychats.core.JellyChatsPlugin;
+import dev.azuuure.jellychats.core.JellyChatsPluginProvider;
 import dev.azuuure.jellychats.core.chat.manager.ChatManager;
 import dev.azuuure.jellychats.core.configuration.Configuration;
 import dev.azuuure.jellychats.core.messenger.ChatMessenger;
@@ -45,6 +46,7 @@ public class VelocityJellyChatsPlugin implements JellyChatsPlugin {
 
     @Inject
     public VelocityJellyChatsPlugin(ProxyServer server, Logger logger, Injector injector) {
+        JellyChatsPluginProvider.setInstance(this);
         instance = this;
 
         this.server = server;

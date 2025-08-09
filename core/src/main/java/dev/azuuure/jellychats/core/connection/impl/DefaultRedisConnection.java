@@ -8,6 +8,13 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
 
+/**
+ * The default {@link RedisConnection} implementation which uses
+ * {@link Jedis} as its backend.
+ *
+ * @author azurejelly
+ * @since 1.2.0
+ */
 public class DefaultRedisConnection implements RedisConnection<Jedis> {
 
     private final String hostname;

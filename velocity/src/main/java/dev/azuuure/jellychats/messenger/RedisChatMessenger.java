@@ -39,12 +39,6 @@ public class RedisChatMessenger implements ChatMessenger {
     }
 
     @Override
-    public void reload() {
-        this.shutdown();
-        this.initialize();
-    }
-
-    @Override
     public void send(MessageAuthor author, PrivateChat chat, String message) {
         PrivateChatMessage.Builder builder = PrivateChatMessage.builder()
                 .server(author.server())

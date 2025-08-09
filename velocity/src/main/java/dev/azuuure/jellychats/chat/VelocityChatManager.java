@@ -46,7 +46,6 @@ public class VelocityChatManager implements ChatManager {
         base.childrenMap().forEach((k, v) -> {
             try {
                 String id = k.toString();
-                logger.info("Loading private chat with ID '{}'", id);
 
                 boolean enabled = v.node("enabled").getBoolean(false);
                 String name = v.node("name").getString(id);
@@ -69,30 +68,7 @@ public class VelocityChatManager implements ChatManager {
                                         .build()
                         ).build();
 
-                SimpleCommand command = new AbstractPrivateChatCommand() {
-                    @Override
-                    protected Configuration configuration() {
-                        return configuration;
-                    }
-
-                    @Override
-                    protected ChatMessenger messenger() {
-                        return messenger;
-                    }
-
-                    @Override
-                    protected PrivateChat chat() {
-                        return chat;
-                    }
-                };
-
-                CommandMeta.Builder metaBuilder = commandManager.metaBuilder(chat.command().main());
-                if (aliases != null && !aliases.isEmpty()) {
-                    metaBuilder.aliases(aliases.toArray(new String[0]));
-                }
-
-                commandManager.register(metaBuilder.build(), command);
-                chats.put(id.toLowerCase(), chat);
+                register(chat);
             } catch (SerializationException e) {
                 logger.warn("Failed to load and register private chat identified by '{}'", k, e);
             }
@@ -100,14 +76,32 @@ public class VelocityChatManager implements ChatManager {
     }
 
     @Override
-    public void reload() {
-        this.shutdown();
-        this.initialize();
-    }
-
-    @Override
     public void register(PrivateChat chat) {
+        SimpleCommand command = new AbstractPrivateChatCommand() {
+            @Override
+            protected Configuration configuration() {
+                return configuration;
+            }
+
+            @Override
+            protected ChatMessenger messenger() {
+                return messenger;
+            }
+
+            @Override
+            protected PrivateChat chat() {
+                return chat;
+            }
+        };
+
+        CommandMeta.Builder metaBuilder = server.getCommandManager().metaBuilder(chat.command().main());
+        if (chat.command().aliases() != null && !chat.command().aliases().isEmpty()) {
+            metaBuilder.aliases(chat.command().aliases().toArray(new String[0]));
+        }
+
+        server.getCommandManager().register(metaBuilder.build(), command);
         chats.put(chat.id().toLowerCase(), chat);
+        logger.info("Loaded chat with ID {}", chat.id());
     }
 
     @Override
@@ -134,7 +128,7 @@ public class VelocityChatManager implements ChatManager {
     @Override
     public void shutdown() {
         chats.forEach((id,chat) -> {
-            logger.info("Unregistering chat with ID '{}'", id);
+            logger.info("Unloaded chat with ID '{}'", id);
             server.getCommandManager().unregister(chat.command().main());
             chat.command().aliases().forEach(alias -> server.getCommandManager().unregister(alias));
         });

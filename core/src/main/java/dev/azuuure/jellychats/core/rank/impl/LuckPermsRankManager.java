@@ -8,6 +8,14 @@ import net.luckperms.api.model.user.User;
 
 import java.util.UUID;
 
+/**
+ * A {@link RankManager} implementation that uses the <a href="https://luckperms.net/">LuckPerms</a>
+ * plugin for rank prefixes and suffixes.
+ *
+ * @author azurejelly
+ * @since 1.2.0
+ * @see dev.azuuure.jellychats.core.rank.RankManager
+ */
 public class LuckPermsRankManager implements RankManager {
 
     private final LuckPerms luckPerms;

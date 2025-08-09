@@ -7,6 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents a private chat and contains all of its
+ * properties.
+ *
+ * @since 1.2.0
+ * @author azurejelly
+ */
 @Data
 @Builder
 @Accessors(fluent = true)
