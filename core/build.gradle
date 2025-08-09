@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api "redis.clients:jedis:6.0.0"
+    api "org.spongepowered:configurate-yaml:4.2.0"
+    api "net.kyori:adventure-api:4.24.0"
+    api "net.kyori:adventure-text-minimessage:4.24.0"
+
+    compileOnly "org.projectlombok:lombok:1.18.38"
+    compileOnly "net.luckperms:api:5.4"
+
+    annotationProcessor "org.projectlombok:lombok:1.18.38"
+
+    testImplementation platform("org.junit:junit-bom:5.10.0")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+def templateSource = file('src/main/templates')
+def templateDest = layout.buildDirectory.dir('generated/sources/templates')
+def generateTemplates = tasks.register('generateTemplates', Copy) { task ->
+    def props = [
+            'version': project.version
+    ]
+    task.inputs.properties props
+
+    task.from templateSource
+    task.into templateDest
+    task.expand props
+}
+
+sourceSets.main.java.srcDir(generateTemplates.map { it.outputs })
+
+rootProject.idea.project.settings.taskTriggers.afterSync generateTemplates
+rootProject.eclipse.synchronizationTasks(generateTemplates)
