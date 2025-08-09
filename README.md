@@ -73,6 +73,17 @@ messages:
 
 This example assumes you're using the same chat created earlier.
 
+## Developers
+
+You can replace the default [`RankManager`](core/src/main/java/dev/azuuure/jellychats/core/rank/RankManager.java) by using
+something like:
+
+```java
+RankManager rankManager = new MyRankManager();
+JellyChatsPlugin plugin = VelocityJellyChatsPlugin.getInstance();
+plugin.setRankManager(rankManager);
+```
+
 ## Building from source
 
 Clone the repository:
