@@ -1,7 +1,6 @@
 package dev.azuuure.jellychats.chat;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -39,7 +38,6 @@ public class VelocityChatManager implements ChatManager {
 
     @Override
     public void initialize() {
-        CommandManager commandManager = server.getCommandManager();
         ConfigurationNode base = configuration.getRootNode().node("chats");
         String channelPrefix = configuration.getString("default-channel-prefix", "jelly-chats/");
 
