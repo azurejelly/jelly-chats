@@ -14,14 +14,14 @@ dependencies {
 }
 
 tasks {
-//    runVelocity {
-//        dependsOn tasks.named("build")
-//        velocityVersion("3.4.0-SNAPSHOT")
-//
-//        downloadPlugins {
-//            modrinth("luckperms", "v5.5.0-velocity")
-//        }
-//    }
+    runWaterfall {
+        dependsOn tasks.named("build")
+        waterfallVersion("1.21")
+
+        downloadPlugins {
+            modrinth("luckperms", "v5.5.0-bungee")
+        }
+    }
 
     shadowJar {
         var pkg = "dev.azuuure.jellychats.libs"
