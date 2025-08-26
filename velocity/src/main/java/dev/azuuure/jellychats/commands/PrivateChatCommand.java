@@ -12,22 +12,32 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 import java.util.UUID;
 
-public abstract class AbstractPrivateChatCommand implements SimpleCommand {
+public class PrivateChatCommand implements SimpleCommand {
+
+    private final Configuration config;
+    private final ChatMessenger messenger;
+    private final PrivateChat chat;
+
+    public PrivateChatCommand(Configuration config, ChatMessenger messenger, PrivateChat chat) {
+        this.config = config;
+        this.messenger = messenger;
+        this.chat = chat;
+    }
 
     @Override
     public void execute(Invocation invocation) {
         CommandSource source = invocation.source();
         String[] args = invocation.arguments();
 
-        if (!chat().enabled()) {
-            source.sendMessage(configuration().getComponent("messages.chat-disabled"));
+        if (!chat.enabled()) {
+            source.sendMessage(config.getComponent("messages.chat-disabled"));
             return;
         }
 
         if (args.length == 0) {
             source.sendMessage(
-                    configuration().getComponent("messages.usage",
-                            Placeholder.unparsed("usage", chat().command().main() + " <message>")
+                    config.getComponent("messages.usage",
+                            Placeholder.unparsed("usage", chat.command().main() + " <message>")
                     )
             );
         } else {
@@ -38,29 +48,23 @@ public abstract class AbstractPrivateChatCommand implements SimpleCommand {
                 String name = player.getUsername();
                 String server = player.getCurrentServer()
                         .map(connection -> connection.getServerInfo().getName())
-                        .orElse(configuration().getString("unknown-server", ChatFormatUtil.DEFAULT_SERVER));
+                        .orElse(config.getString("unknown-server", ChatFormatUtil.DEFAULT_SERVER));
 
                 author = MessageAuthor.from(uuid, name, server);
             } else {
                 author = MessageAuthor.asConsole(
-                        configuration().getString("console-name", ChatFormatUtil.DEFAULT_CONSOLE_NAME),
-                        configuration().getString("unknown-server", ChatFormatUtil.DEFAULT_SERVER)
+                        config.getString("console-name", ChatFormatUtil.DEFAULT_CONSOLE_NAME),
+                        config.getString("unknown-server", ChatFormatUtil.DEFAULT_SERVER)
                 );
             }
 
             String message = String.join(" ", args);
-            messenger().send(author, chat(), message);
+            messenger.send(author, chat, message);
         }
     }
 
     @Override
     public boolean hasPermission(Invocation invocation) {
-        return invocation.source().hasPermission(chat().permission());
+        return invocation.source().hasPermission(chat.permission());
     }
-
-    protected abstract Configuration configuration();
-
-    protected abstract ChatMessenger messenger();
-
-    protected abstract PrivateChat chat();
 }

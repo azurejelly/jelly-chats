@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ProxyServer;
-import dev.azuuure.jellychats.commands.AbstractPrivateChatCommand;
+import dev.azuuure.jellychats.commands.PrivateChatCommand;
 import dev.azuuure.jellychats.core.chat.PrivateChat;
 import dev.azuuure.jellychats.core.chat.command.PrivateChatCommandData;
 import dev.azuuure.jellychats.core.chat.manager.ChatManager;
@@ -75,23 +75,7 @@ public class VelocityChatManager implements ChatManager {
 
     @Override
     public void register(PrivateChat chat) {
-        SimpleCommand command = new AbstractPrivateChatCommand() {
-            @Override
-            protected Configuration configuration() {
-                return configuration;
-            }
-
-            @Override
-            protected ChatMessenger messenger() {
-                return messenger;
-            }
-
-            @Override
-            protected PrivateChat chat() {
-                return chat;
-            }
-        };
-
+        SimpleCommand command = new PrivateChatCommand(configuration, messenger, chat);
         CommandMeta.Builder metaBuilder = server.getCommandManager().metaBuilder(chat.command().main());
         if (chat.command().aliases() != null && !chat.command().aliases().isEmpty()) {
             metaBuilder.aliases(chat.command().aliases().toArray(new String[0]));
