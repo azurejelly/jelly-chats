@@ -2,8 +2,8 @@ package dev.azuuure.jellychats.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
+import dev.azuuure.jellychats.chat.messenger.VelocityJedisChatMessenger;
 import dev.azuuure.jellychats.core.messenger.ChatMessenger;
-import dev.azuuure.jellychats.messenger.VelocityJedisChatMessenger;
 
 public class MessengerModule extends AbstractModule {
 

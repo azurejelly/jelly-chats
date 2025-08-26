@@ -1,4 +1,4 @@
-package dev.azuuure.jellychats.messenger;
+package dev.azuuure.jellychats.chat.messenger;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;

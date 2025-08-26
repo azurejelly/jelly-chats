@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id("xyz.jpenilla.run-waterfall") version "2.3.1"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+}
+
+dependencies {
+    compileOnly "net.md-5:bungeecord-api:1.21-R0.3"
+    compileOnly "org.projectlombok:lombok:1.18.38"
+
+    implementation project(":core")
+
+    annotationProcessor "org.projectlombok:lombok:1.18.38"
+}
+
+tasks {
+//    runVelocity {
+//        dependsOn tasks.named("build")
+//        velocityVersion("3.4.0-SNAPSHOT")
+//
+//        downloadPlugins {
+//            modrinth("luckperms", "v5.5.0-velocity")
+//        }
+//    }
+
+    shadowJar {
+        var pkg = "dev.azuuure.jellychats.libs"
+
+        relocate("com.google.gson", "${pkg}.google.gson")
+        relocate("com.google.errorprone", "${pkg}.google.errorprone")
+        relocate("io.leangen.geantyref", "${pkg}.geantyref")
+        relocate("redis.clients.jedis", "${pkg}.redis.jedis")
+        relocate("redis.clients.authentication.core", "${pkg}.redis.authentication")
+        relocate("org.apache.commons.pool2", "${pkg}.pool2")
+        relocate("org.spongepowered.configurate", "${pkg}.configurate")
+        relocate("net.kyori.option", "${pkg}.option")
+        relocate("org.json", "${pkg}.json")
+
+        archiveFileName.set("${rootProject.name}-${project.name}-${project.version}-dist.jar")
+    }
+}
+
+tasks.named("build") {
+    dependsOn tasks.named("shadowJar")
+}
+
